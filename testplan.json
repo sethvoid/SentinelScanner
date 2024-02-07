@@ -1,0 +1,101 @@
+{
+  "test1": {
+    "name": "Strict Transport Security",
+    "type": "single-key-value",
+    "matching-type": "contain",
+    "key": "strict-transport-security",
+    "value": {
+      "max-age": "31536000"
+    }
+  },
+  "test2": {
+    "name": "x Frame options",
+    "type": "value",
+    "key": "x-frame-options",
+    "matching-type": "contain",
+    "value": "DENY"
+  },
+  "test3": {
+    "name": "X-Content Type Options",
+    "type": "value",
+    "key": "X-Content-Type-Options",
+    "matching-type": "contain",
+    "value": "nosniff"
+  },
+  "test4": {
+    "name": "Content Security Policy",
+    "type": "value",
+    "key": "Content-Security-Policy",
+    "matching-type": "should-not-contain",
+    "value": "unsafe"
+  },
+  "test5": {
+    "name": "X permitted cross domain policies",
+    "type": "value",
+    "key": "x-permitted-cross-domain-policies",
+    "matching-type": "should-not-contain",
+    "value": "none"
+  },
+  "test6": {
+    "name": "referrer-policy",
+    "type": "value",
+    "key": "referrer-policy",
+    "matching-type": "contain",
+    "value": "no-referrer"
+  },
+  "test7": {
+    "name": "cross-origin-embedder-policy",
+    "type": "value",
+    "key": "cross-origin-embedder-policy",
+    "matching-type": "contain",
+    "value": "require-corp"
+  },
+  "test8": {
+    "name": "cross-origin-opener-policy",
+    "type": "value",
+    "key": "cross-origin-opener-policy",
+    "matching-type": "contain",
+    "value": "same-origin"
+  },
+  "test9": {
+    "name": "cross-origin-resource-policy",
+    "type": "value",
+    "key": "cross-origin-resource-policy",
+    "matching-type": "contain",
+    "value": "same-origin"
+  },
+  "test10": {
+    "name": "cache-control",
+    "type": "multivalue",
+    "key": "cache-control",
+    "matching-type": "contain",
+    "value": [
+      "no-store",
+      "max-age=0"
+    ]
+  },
+  "test11": {
+    "name": "feature-policy",
+    "type": "value",
+    "key": "feature-policy",
+    "matching-type": "should-not-be-set"
+  },
+  "test12": {
+    "name": "public-key-pins",
+    "type": "value",
+    "key": "public-key-pins",
+    "matching-type": "should-not-be-set"
+  },
+  "test13": {
+    "name": "expect-ct",
+    "type": "value",
+    "key": "expect-ct",
+    "matching-type": "should-not-be-set"
+  },
+  "test14": {
+    "name": "x-xss-protection",
+    "type": "value",
+    "key": "x-xss-protection",
+    "matching-type": "should-not-be-set"
+  }
+}
