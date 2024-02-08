@@ -23,8 +23,7 @@ Y88b.                        888                          888
     "Y88b. d8P  Y8b 888 "88b 888    888 888 "88b d8P  Y8b 888
       "888 88888888 888  888 888    888 888  888 88888888 888
 Y88b  d88P Y8b.     888  888 Y88b.  888 888  888 Y8b.     888
- "Y8888P"   "Y8888  888  888  "Y888 888 888  888  "Y88
- 88  888
+ "Y8888P"   "Y8888  888  888  "Y888 888 888  888  "Y8888  888
 
                 ▒▒▒▒▒▒▒█▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀█
                 ▒▒▒▒▒▒▒█░▒▒▒▒▒▒▒▓▒▒▓▒▒▒▒▒▒▒░█
@@ -79,6 +78,14 @@ pass_result = []
 fail_result = []
 for test_name, test in configArray.items():
     test['key'] = test['key'].lower()
+    if test['matching-type'] == 'should-not-be-set':
+        if test['key'] in headerContentArray:
+            fail_result.append({'name': test['key'], 'result': f"Prohibited header set {test['key']}", 'help_link': test['link']})
+            continue
+        else:
+            pass_result.append({'name': test['key'], 'result': f"Header {test['key']} is not present", 'help_link': test['link']})
+            continue
+
     if test['key'] not in headerContentArray:
         fail_result.append({'name': test['key'], 'result': 'Header is not set.', 'help_link': test['link']})
         continue
@@ -178,7 +185,7 @@ save_to_log({'name': 'header-name', 'result': 'error', 'help_link': 'information
 
 print(green + ' ------------------------------------ PASS --------------------------------------- ' + reset)
 for p in pass_result:
-    print(green + p['name'] + ' ' +p['name'] + reset)
+    print(green + p['name'] + ' ' +p['result'] + reset)
     # Log pass results
     save_to_log({'name': p['name'], 'result': p['name'], 'help_link': p['help_link']}, file_name, "PASS")
 print("\n")
@@ -192,4 +199,4 @@ if fail_result:
 
 print("File has been saved as " + file_name)
 if '-vvv' in sys.argv:
-    print(headerContentArray)
+    print(response.headers.items())

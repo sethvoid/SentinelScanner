@@ -35,30 +35,25 @@ $red = "\033[0;31m";
 $green = "\033[0;32m";
 $reset = "\033[0m"; // Reset to default color
 
-// Initialize cURL session
-$ch = curl_init();
+function curReq($target)
+{
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $target);
+    curl_setopt($ch, CURLOPT_HEADER, true);
+    curl_setopt($ch, CURLOPT_NOBODY, true);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $response = curl_exec($ch);
 
-// Set the URL
-curl_setopt($ch, CURLOPT_URL, $target);
+    if ($response === false) {
+        echo 'cURL error: ' . curl_error($ch);
+        exit();
+    }
+    curl_close($ch);
 
-// Set to retrieve headers only
-curl_setopt($ch, CURLOPT_HEADER, true);
-
-// Set to not include the body in the output
-curl_setopt($ch, CURLOPT_NOBODY, true);
-
-// Set to return the transfer as a string
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-// Execute cURL session
-$response = curl_exec($ch);
-
-// Check for errors
-if($response === false) {
-    echo 'cURL error: ' . curl_error($ch);
-    exit();
+    return $response;
 }
-curl_close($ch);
+
+$response = curReq($target);
 $headerContentArray = [];
 foreach(preg_split("/((\r?\n)|(\r\n?))/", $response) as $line){
     if (str_contains($line, ':')) {
@@ -101,6 +96,24 @@ $pass  = [];
 $fail = [];
 foreach ($configArray as $testName => $test) {
     $test['key'] = strtolower($test['key']);
+    if ($test['matching-type'] == 'should-not-be-set') {
+        if (isset($headerContentArray[$test['key']])) {
+            $fail[] = [
+                'name' => $test['key'],
+                'result' => 'Prohibited header set ' . $test['key'],
+                'help_link' => $test['link'] ?? ''
+            ];
+            continue;
+        } else {
+            $pass[] = [
+                'name' => $test['key'],
+                'result' => 'Header ' . $test['key'] . ' does not contain prohibited header',
+                'help_link' => $test['link'] ?? ''
+            ];
+            continue;
+        }
+    }
+
     if (!isset($headerContentArray[$test['key']])) {
         $fail[] = [
             'name' => $test['key'],
@@ -180,7 +193,8 @@ foreach ($configArray as $testName => $test) {
 
         $fail[] = [
             'name' => $test['key'],
-            'result' => 'Header ' . $test['key'] . ' contains invalid value ' .$singleValueValue
+            'result' => 'Header ' . $test['key'] . ' contains invalid value ' .$singleValueValue,
+            'help_link' => $test['link'] ?? ''
         ];
     } else if ($test['type'] == 'value') {
         if ($test['matching-type'] == 'should-not-be-set') {

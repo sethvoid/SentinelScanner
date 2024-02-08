@@ -79,7 +79,6 @@
     "key": "cache-control",
     "matching-type": "contain",
     "value": [
-      "no-store",
       "max-age=0"
     ],
     "link": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control"
