@@ -13,14 +13,35 @@ timeout = 10
 
 target = sys.argv[1]
 configFile = sys.argv[2]
+# Text art
+text_art = """
+▒▒▒▒▒▒▒█▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀█
+▒▒▒▒▒▒▒█░▒▒▒▒▒▒▒▓▒▒▓▒▒▒▒▒▒▒░█
+▒▒▒▒▒▒▒█░▒▒▓▒▒▒▒▒▒▒▒▒▄▄▒▓▒▒░█░▄▄
+▒▒▄▀▀▄▄█░▒▒▒▒▒▒▓▒▒▒▒█░░▀▄▄▄▄▄▀░░█
+▒▒█░░░░█░▒▒▒▒▒▒▒▒▒▒▒█░░░░░░░░░░░█
+▒▒▒▀▀▄▄█░▒▒▒▒▓▒▒▒▓▒█░░░█▒░░░░█▒░░█
+▒▒▒▒▒▒▒█░▒▓▒▒▒▒▓▒▒▒█░░░░░░░▀░░░░░█
+▒▒▒▒▒▄▄█░▒▒▒▓▒▒▒▒▒▒▒█░░█▄▄█▄▄█░░█
+▒▒▒▒█░░░█▄▄▄▄▄▄▄▄▄▄█░█▄▄▄▄▄▄▄▄▄█
+▒▒▒▒█▄▄█░░█▄▄█░░░░░░█▄▄█░░█▄▄█
+
+HOLD ON! HERE WE GO!
+"""
+
+print(text_art)
 
 try:
     response = requests.head(target, timeout=timeout)
 except requests.exceptions.Timeout:
+    print(red + "--------------------------------------------ERROR------------------------------------------------" + reset)
     print(red + "Request timed out. Please check the URL and try again." + reset)
+    print(red + "--------------------------------------ERROR MESSAGE ENDS-----------------------------------------" + reset)
     sys.exit(1)
 except requests.exceptions.RequestException as e:
-    print(red + f"Error fetching headers: {e}" + reset)
+    print(red + "--------------------------------------------ERROR------------------------------------------------" + reset)
+    print(red + f"{e}" + reset)
+    print(red + "--------------------------------------ERROR MESSAGE ENDS-----------------------------------------" + reset)
     sys.exit(1)
 
 headerContentArray = {}
@@ -136,12 +157,13 @@ print(green + ' ------------------------------------ PASS ----------------------
 for p in pass_result:
     print(green + p['name'] + ' ' + p['result'] + reset)
 
-print()
+print(green + ' ------------------------------------ PASS REPORT ENDS---------------------------- ' + reset)
 
 if fail_result:
     print(red + ' ------------------------------------ FAIL --------------------------------------- ' + reset)
     for f in fail_result:
         print(red + f['name'] + ' ' + f['result'] + reset)
+    print(red + ' ------------------------------------ FAIL REPORT ENDS---------------------------- ' + reset)
 
 if '-vvv' in sys.argv:
     print(headerContentArray)
