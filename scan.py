@@ -8,14 +8,19 @@ red = "\033[0;31m"
 green = "\033[0;32m"
 reset = "\033[0m"  # Reset to default color
 
+# Set timeout value in seconds
+timeout = 10
+
 target = sys.argv[1]
 configFile = sys.argv[2]
 
-# Fetching headers using requests library
-response = requests.head(target)
-
-if response.status_code != 200:
-    print("Failed to fetch headers.")
+try:
+    response = requests.head(target, timeout=timeout)
+except requests.exceptions.Timeout:
+    print(red + "Request timed out. Please check the URL and try again." + reset)
+    sys.exit(1)
+except requests.exceptions.RequestException as e:
+    print(red + f"Error fetching headers: {e}" + reset)
     sys.exit(1)
 
 headerContentArray = {}
