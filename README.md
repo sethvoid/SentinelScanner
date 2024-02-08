@@ -18,6 +18,15 @@ Y88b  d88P Y8b.     888  888 Y88b.  888 888  888 Y8b.     888
                 ▒▒▒▒▒▄▄█░▒▒▒▓▒▒▒▒▒▒▒█░░█▄▄█▄▄█░░█
                 ▒▒▒▒█░░░█▄▄▄▄▄▄▄▄▄▄█░█▄▄▄▄▄▄▄▄▄█
                 ▒▒▒▒█▄▄█░░█▄▄█░░░░░░█▄▄█░░█▄▄█
+                
+                 (c) 2021-2022 by Seth Wallace / Maxproton
+         <maxpr0t0n@protonmail.com> https://github.com/sethvoid/pwd
+           Licensed under Apache License 2.0 (see LICENSE file)
+
+       Please do not use in military or for illegal purposes.
+  (This is the wish of the author and non-binding. Many people working
+   in these organizations do not care for laws and ethics anyways.
+        You are not one of the "good" ones if you ignore this.)
 ```
 
 # SentinelScanner
