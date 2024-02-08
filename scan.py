@@ -19,29 +19,26 @@ if response.status_code != 200:
     sys.exit(1)
 
 headerContentArray = {}
-for line in response.headers:
-    line = line.strip()
-    if ':' in line:
-        headerArray = line.split(':', 1)
-        if len(headerArray) == 2:
-            headerArray[0] = headerArray[0].lower()
-            headerArray[1] = headerArray[1].strip().lower()
-            multiValues = None
-            singleValueKeyPair = None
-            if ',' in headerArray[1]:
-                multiValues = [val.strip() for val in headerArray[1].split(',')]
-            if '=' in headerArray[1]:
-                a = headerArray[1].split('=', 1)
-                if len(a) == 2:
-                    abrevValue = a[1].split(';', 1)
-                    if len(abrevValue) > 0:
-                        singleValueKeyPair = {a[0].strip(): abrevValue[0].strip()}
-            if multiValues:
-                headerContentArray[headerArray[0]] = multiValues
-            elif singleValueKeyPair:
-                headerContentArray[headerArray[0]] = singleValueKeyPair
-            else:
-                headerContentArray[headerArray[0]] = headerArray[1]
+for key, value in response.headers.items():
+    headerArray = {}
+    headerArray[0] = key.lower()
+    headerArray[1] = value.strip().lower()
+    multiValues = None
+    singleValueKeyPair = None
+    if ',' in headerArray[1]:
+        multiValues = [val.strip() for val in headerArray[1].split(',')]
+    if '=' in headerArray[1]:
+        a = headerArray[1].split('=', 1)
+        if len(a) == 2:
+            abrevValue = a[1].split(';', 1)
+            if len(abrevValue) > 0:
+                singleValueKeyPair = {a[0].strip(): abrevValue[0].strip()}
+    if multiValues:
+        headerContentArray[headerArray[0]] = multiValues
+    elif singleValueKeyPair:
+        headerContentArray[headerArray[0]] = singleValueKeyPair
+    else:
+        headerContentArray[headerArray[0]] = headerArray[1]
 
 configArray = json.load(open(configFile))
 
@@ -60,32 +57,20 @@ for test_name, test in configArray.items():
             singleValueKey = key.lower()
             singleValueValue = val.lower()
 
-        isRange = '-' in singleValueValue
-        if isRange:
-            rangeArray = singleValueValue.split('-')
-            lowest, highest = map(float, rangeArray)
-            isRange = isinstance(lowest, float) and isinstance(highest, float)
-
         if singleValueKey not in headerContentArray[test['key']]:
             fail_result.append({'name': test['key'], 'result': f"Header {test['key']} does not contain the key value {singleValueKey}"})
             continue
 
         if test['matching-type'] == 'should-not-contain':
             failFlag = False
-            if isRange:
-                failFlag = lowest <= headerContentArray[test['key']][singleValueKey] <= highest
-            else:
-                failFlag = headerContentArray[test['key']][singleValueKey] == singleValueValue
+            failFlag = headerContentArray[test['key']][singleValueKey] == singleValueValue
 
             if failFlag:
                 fail_result.append({'name': test['key'], 'result': f"Header {test['key']} contains invalid value {singleValueValue}"})
                 continue
         else:
             passFlag = False
-            if isRange:
-                passFlag = lowest <= headerContentArray[test['key']][singleValueKey] <= highest
-            else:
-                passFlag = headerContentArray[test['key']][singleValueKey] == singleValueValue
+            passFlag = headerContentArray[test['key']][singleValueKey] == singleValueValue
 
             if passFlag:
                 pass_result.append({'name': test['key'], 'result': f"Header {test['key']} contains correct value {singleValueValue}"})
@@ -103,28 +88,16 @@ for test_name, test in configArray.items():
             fail_result.append({'name': test['key'], 'result': 'Header is not set or is missing.'})
             continue
 
-        isRange = '-' in test['value']
-        if isRange:
-            rangeArray = test['value'].split('-')
-            lowest, highest = map(float, rangeArray)
-            isRange = isinstance(lowest, float) and isinstance(highest, float)
-
         if test['matching-type'] == 'should-not-contain':
             failFlag = False
-            if isRange:
-                failFlag = lowest <= headerContentArray[test['key']] <= highest
-            else:
-                failFlag = test['value'].lower() in headerContentArray[test['key']]
+            failFlag = test['value'].lower() in headerContentArray[test['key']]
 
             if failFlag:
                 fail_result.append({'name': test['key'], 'result': f"Header {test['key']} contains invalid value {test['value']}"})
                 continue
         else:
             passFlag = False
-            if isRange:
-                passFlag = lowest <= headerContentArray[test['key']] <= highest
-            else:
-                passFlag = headerContentArray[test['key']] == test['value'].lower()
+            passFlag = headerContentArray[test['key']] == test['value'].lower()
 
             if passFlag:
                 pass_result.append({'name': test['key'], 'result': f"Header {test['key']} contains correct value {test['value']}"})
