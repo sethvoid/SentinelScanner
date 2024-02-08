@@ -2,6 +2,7 @@ import sys
 import re
 import json
 import requests
+from datetime import datetime
 
 # ANSI escape codes for colors
 red = "\033[0;31m"
@@ -15,22 +16,28 @@ target = sys.argv[1]
 configFile = sys.argv[2]
 # Text art
 text_art = """
-▒▒▒▒▒▒▒█▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀█
-▒▒▒▒▒▒▒█░▒▒▒▒▒▒▒▓▒▒▓▒▒▒▒▒▒▒░█
-▒▒▒▒▒▒▒█░▒▒▓▒▒▒▒▒▒▒▒▒▄▄▒▓▒▒░█░▄▄
-▒▒▄▀▀▄▄█░▒▒▒▒▒▒▓▒▒▒▒█░░▀▄▄▄▄▄▀░░█
-▒▒█░░░░█░▒▒▒▒▒▒▒▒▒▒▒█░░░░░░░░░░░█
-▒▒▒▀▀▄▄█░▒▒▒▒▓▒▒▒▓▒█░░░█▒░░░░█▒░░█
-▒▒▒▒▒▒▒█░▒▓▒▒▒▒▓▒▒▒█░░░░░░░▀░░░░░█
-▒▒▒▒▒▄▄█░▒▒▒▓▒▒▒▒▒▒▒█░░█▄▄█▄▄█░░█
-▒▒▒▒█░░░█▄▄▄▄▄▄▄▄▄▄█░█▄▄▄▄▄▄▄▄▄█
-▒▒▒▒█▄▄█░░█▄▄█░░░░░░█▄▄█░░█▄▄█
+ .d8888b.                    888    d8b                   888
+d88P  Y88b                   888    Y8P                   888
+Y88b.                        888                          888
+ "Y888b.    .d88b.  88888b.  888888 888 88888b.   .d88b.  888
+    "Y88b. d8P  Y8b 888 "88b 888    888 888 "88b d8P  Y8b 888
+      "888 88888888 888  888 888    888 888  888 88888888 888
+Y88b  d88P Y8b.     888  888 Y88b.  888 888  888 Y8b.     888
+ "Y8888P"   "Y8888  888  888  "Y888 888 888  888  "Y88
+ 88  888
 
-HOLD ON! HERE WE GO!
+                ▒▒▒▒▒▒▒█▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀█
+                ▒▒▒▒▒▒▒█░▒▒▒▒▒▒▒▓▒▒▓▒▒▒▒▒▒▒░█
+                ▒▒▒▒▒▒▒█░▒▒▓▒▒▒▒▒▒▒▒▒▄▄▒▓▒▒░█░▄▄
+                ▒▒▄▀▀▄▄█░▒▒▒▒▒▒▓▒▒▒▒█░░▀▄▄▄▄▄▀░░█
+                ▒▒█░░░░█░▒▒▒▒▒▒▒▒▒▒▒█░░░░░░░░░░░█  <HOLD ON! HERE WE GO!
+                ▒▒▒▀▀▄▄█░▒▒▒▒▓▒▒▒▓▒█░░░█▒░░░░█▒░░█
+                ▒▒▒▒▒▒▒█░▒▓▒▒▒▒▓▒▒▒█░░░░░░░▀░░░░░█
+                ▒▒▒▒▒▄▄█░▒▒▒▓▒▒▒▒▒▒▒█░░█▄▄█▄▄█░░█
+                ▒▒▒▒█░░░█▄▄▄▄▄▄▄▄▄▄█░█▄▄▄▄▄▄▄▄▄█
+                ▒▒▒▒█▄▄█░░█▄▄█░░░░░░█▄▄█░░█▄▄█
 """
-
 print(text_art)
-
 try:
     response = requests.head(target, timeout=timeout)
 except requests.exceptions.Timeout:
@@ -73,7 +80,7 @@ fail_result = []
 for test_name, test in configArray.items():
     test['key'] = test['key'].lower()
     if test['key'] not in headerContentArray:
-        fail_result.append({'name': test['key'], 'result': 'Header is not set.'})
+        fail_result.append({'name': test['key'], 'result': 'Header is not set.', 'help_link': test['link']})
         continue
 
     if test['type'] == 'single-key-value':
@@ -84,7 +91,7 @@ for test_name, test in configArray.items():
             singleValueValue = val.lower()
 
         if singleValueKey not in headerContentArray[test['key']]:
-            fail_result.append({'name': test['key'], 'result': f"Header {test['key']} does not contain the key value {singleValueKey}"})
+            fail_result.append({'name': test['key'], 'result': f"Header {test['key']} does not contain the key value {singleValueKey}", 'help_link': test['link']})
             continue
 
         if test['matching-type'] == 'should-not-contain':
@@ -92,26 +99,26 @@ for test_name, test in configArray.items():
             failFlag = headerContentArray[test['key']][singleValueKey] == singleValueValue
 
             if failFlag:
-                fail_result.append({'name': test['key'], 'result': f"Header {test['key']} contains invalid value {singleValueValue}"})
+                fail_result.append({'name': test['key'], 'result': f"Header {test['key']} contains invalid value {singleValueValue}", 'help_link': test['link']})
                 continue
         else:
             passFlag = False
             passFlag = headerContentArray[test['key']][singleValueKey] == singleValueValue
 
             if passFlag:
-                pass_result.append({'name': test['key'], 'result': f"Header {test['key']} contains correct value {singleValueValue}"})
+                pass_result.append({'name': test['key'], 'result': f"Header {test['key']} contains correct value {singleValueValue}", 'help_link': test['link']})
                 continue
 
-        fail_result.append({'name': test['key'], 'result': f"Header {test['key']} contains invalid value {singleValueValue}"})
+        fail_result.append({'name': test['key'], 'result': f"Header {test['key']} contains invalid value {singleValueValue}", 'help_link': test['link']})
 
     elif test['type'] == 'value':
         if test['matching-type'] == 'should-not-be-set':
             if test['key'] in headerContentArray:
-                fail_result.append({'name': test['key'], 'result': f"Prohibited header set {test['key']}"})
+                fail_result.append({'name': test['key'], 'result': f"Prohibited header set {test['key']}", 'help_link': test['link']})
                 continue
 
         if test['key'] not in headerContentArray:
-            fail_result.append({'name': test['key'], 'result': 'Header is not set or is missing.'})
+            fail_result.append({'name': test['key'], 'result': 'Header is not set or is missing.', 'help_link': test['link']})
             continue
 
         if test['matching-type'] == 'should-not-contain':
@@ -119,21 +126,21 @@ for test_name, test in configArray.items():
             failFlag = test['value'].lower() in headerContentArray[test['key']]
 
             if failFlag:
-                fail_result.append({'name': test['key'], 'result': f"Header {test['key']} contains invalid value {test['value']}"})
+                fail_result.append({'name': test['key'], 'result': f"Header {test['key']} contains invalid value {test['value']}", 'help_link': test['link']})
                 continue
         else:
             passFlag = False
             passFlag = headerContentArray[test['key']] == test['value'].lower()
 
             if passFlag:
-                pass_result.append({'name': test['key'], 'result': f"Header {test['key']} contains correct value {test['value']}"})
+                pass_result.append({'name': test['key'], 'result': f"Header {test['key']} contains correct value {test['value']}", 'help_link': test['link']})
                 continue
 
-        fail_result.append({'name': test['key'], 'result': f"Header {test['key']} contains invalid value {test['value']}"})
+        fail_result.append({'name': test['key'], 'result': f"Header {test['key']} contains invalid value {test['value']}", 'help_link': test['link']})
 
     elif test['type'] == 'multivalue':
         if test['key'] not in headerContentArray:
-            fail_result.append({'name': test['key'], 'result': 'Header is not set or is missing.'})
+            fail_result.append({'name': test['key'], 'result': 'Header is not set or is missing.', 'help_link': test['link']})
             continue
 
         passCount = 0
@@ -142,28 +149,47 @@ for test_name, test in configArray.items():
             val = val.lower()
             if test['matching-type'] == 'should-not-contain':
                 if val in headerContentArray[test['key']]:
-                    fail_result.append({'name': test['key'], 'result': f"Header {test['key']} contains invalid value {val}"})
+                    fail_result.append({'name': test['key'], 'result': f"Header {test['key']} contains invalid value {val}", 'help_link': test['link']})
                     continue
                 passCount += 1
             else:
                 if val in headerContentArray[test['key']]:
-                    pass_result.append({'name': test['key'], 'result': f"Header {test['key']} contains correct value {val}"})
+                    pass_result.append({'name': test['key'], 'result': f"Header {test['key']} contains correct value {val}", 'help_link': test['link']})
                     passCount += 1
 
         if passCount < count:
-            fail_result.append({'name': test['key'], 'result': f"Header {test['key']} is missing some values "})
+            fail_result.append({'name': test['key'], 'result': f"Header {test['key']} is missing some values ", 'help_link': test['link']})
+
+# Function to save results to a log file
+def save_to_log(result, file_name, status):
+    with open(file_name, 'a') as f:
+        log_entry = f"{status},{result['name']}," \
+                    f'"{result["result"]}","{result["help_link"]}"\n'
+        f.write(log_entry)
+
+# Get the current date and time
+current_datetime = datetime.now()
+
+# Format the date and time string in the desired format
+file_name = current_datetime.strftime("%H%M-%d-%m-%Y") + '-results.log'
+save_to_log({'name': "scan.py", 'result': '', 'help_link': ''}, file_name, "SCRIPT:")
+save_to_log({'name': target, 'result': '', 'help_link': ''}, file_name, "TARGET:")
+save_to_log({'name': 'header-name', 'result': 'error', 'help_link': 'information-link'}, file_name, "result")
 
 print(green + ' ------------------------------------ PASS --------------------------------------- ' + reset)
 for p in pass_result:
-    print(green + p['name'] + ' ' + p['result'] + reset)
-
-print(green + ' ------------------------------------ PASS REPORT ENDS---------------------------- ' + reset)
+    print(green + p['name'] + ' ' +p['name'] + reset)
+    # Log pass results
+    save_to_log({'name': p['name'], 'result': p['name'], 'help_link': p['help_link']}, file_name, "PASS")
+print("\n")
 
 if fail_result:
     print(red + ' ------------------------------------ FAIL --------------------------------------- ' + reset)
     for f in fail_result:
         print(red + f['name'] + ' ' + f['result'] + reset)
-    print(red + ' ------------------------------------ FAIL REPORT ENDS---------------------------- ' + reset)
+        save_to_log({'name': f['name'], 'result': f['name'], 'help_link': f['help_link']}, file_name, "FAIL")
+    print("\n")
 
+print("File has been saved as " + file_name)
 if '-vvv' in sys.argv:
     print(headerContentArray)

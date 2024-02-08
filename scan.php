@@ -6,7 +6,29 @@
  * multivalue = something: value1, value2, value3
  * matching-type: contain should-not-contain, should-not-be-set
  */
+$text_art = '
+ .d8888b.                    888    d8b                   888
+d88P  Y88b                   888    Y8P                   888
+Y88b.                        888                          888
+ "Y888b.    .d88b.  88888b.  888888 888 88888b.   .d88b.  888
+    "Y88b. d8P  Y8b 888 "88b 888    888 888 "88b d8P  Y8b 888
+      "888 88888888 888  888 888    888 888  888 88888888 888
+Y88b  d88P Y8b.     888  888 Y88b.  888 888  888 Y8b.     888
+ "Y8888P"   "Y8888  888  888  "Y888 888 888  888  "Y8888  888
 
+                ▒▒▒▒▒▒▒█▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀█
+                ▒▒▒▒▒▒▒█░▒▒▒▒▒▒▒▓▒▒▓▒▒▒▒▒▒▒░█
+                ▒▒▒▒▒▒▒█░▒▒▓▒▒▒▒▒▒▒▒▒▄▄▒▓▒▒░█░▄▄
+                ▒▒▄▀▀▄▄█░▒▒▒▒▒▒▓▒▒▒▒█░░▀▄▄▄▄▄▀░░█
+                ▒▒█░░░░█░▒▒▒▒▒▒▒▒▒▒▒█░░░░░░░░░░░█  <HOLD ON! HERE WE GO!
+                ▒▒▒▀▀▄▄█░▒▒▒▒▓▒▒▒▓▒█░░░█▒░░░░█▒░░█
+                ▒▒▒▒▒▒▒█░▒▓▒▒▒▒▓▒▒▒█░░░░░░░▀░░░░░█
+                ▒▒▒▒▒▄▄█░▒▒▒▓▒▒▒▒▒▒▒█░░█▄▄█▄▄█░░█
+                ▒▒▒▒█░░░█▄▄▄▄▄▄▄▄▄▄█░█▄▄▄▄▄▄▄▄▄█
+                ▒▒▒▒█▄▄█░░█▄▄█░░░░░░█▄▄█░░█▄▄█
+';
+
+echo  $text_art . PHP_EOL;
 $target = $argv[1];
 $configFile = $argv[2];
 $red = "\033[0;31m";
@@ -82,7 +104,8 @@ foreach ($configArray as $testName => $test) {
     if (!isset($headerContentArray[$test['key']])) {
         $fail[] = [
             'name' => $test['key'],
-            'result' => 'Header is not set.'
+            'result' => 'Header is not set.',
+            'help_link' => $test['link']
         ];
         continue;
     }
@@ -111,7 +134,8 @@ foreach ($configArray as $testName => $test) {
         if (!isset($headerContentArray[$test['key']][$singleValueKey])) {
             $fail[] = [
                 'name' => $test['key'],
-                'result' => 'Header ' . $test['key'] . ' does not contain the key value ' .$singleValueKey
+                'result' => 'Header ' . $test['key'] . ' does not contain the key value ' .$singleValueKey,
+                'help_link' => $test['link'] ?? ''
             ];
             continue;
         }
@@ -129,7 +153,8 @@ foreach ($configArray as $testName => $test) {
             if ($failFlag) {
                 $fail[] = [
                     'name' => $test['key'],
-                    'result' => 'Header ' . $test['key'] . ' contains invalid value ' . $singleValueValue
+                    'result' => 'Header ' . $test['key'] . ' contains invalid value ' . $singleValueValue,
+                    'help_link' => $test['link'] ?? ''
                 ];
                 continue;
             }
@@ -146,7 +171,8 @@ foreach ($configArray as $testName => $test) {
             if ($passFlag) {
                 $pass[] = [
                     'name' => $test['key'],
-                    'result' => 'Header ' . $test['key'] . ' contains correct value ' . $singleValueValue
+                    'result' => 'Header ' . $test['key'] . ' contains correct value ' . $singleValueValue,
+                    'help_link' => $test['link'] ?? ''
                 ];
                 continue;
             }
@@ -161,7 +187,8 @@ foreach ($configArray as $testName => $test) {
             if (isset($headerContentArray[$test['key']])) {
                 $fail[] = [
                     'name' => $test['key'],
-                    'result' => 'Prohibited header set ' . $test['key']
+                    'result' => 'Prohibited header set ' . $test['key'],
+                    'help_link' => $test['link'] ?? ''
                 ];
                 continue;
             }
@@ -170,7 +197,8 @@ foreach ($configArray as $testName => $test) {
         if (!isset($headerContentArray[$test['key']])) {
             $fail[] = [
                 'name' => $test['key'],
-                'result' => 'Header is not set or is missing.'
+                'result' => 'Header is not set or is missing.',
+                'help_link' => $test['link'] ?? ''
             ];
             continue;
         }
@@ -200,7 +228,8 @@ foreach ($configArray as $testName => $test) {
             if ($failFlag) {
                 $fail[] = [
                     'name' => $test['key'],
-                    'result' => 'Header ' . $test['key'] . ' contains invalid value ' .$test['value']
+                    'result' => 'Header ' . $test['key'] . ' contains invalid value ' .$test['value'],
+                    'help_link' => $test['link'] ?? ''
                 ];
                 continue;
             }
@@ -217,7 +246,8 @@ foreach ($configArray as $testName => $test) {
             if ($passFlag) {
                 $pass[] = [
                     'name' => $test['key'],
-                    'result' => 'Header ' . $test['key'] . ' contains correct value ' .$test['value']
+                    'result' => 'Header ' . $test['key'] . ' contains correct value ' .$test['value'],
+                    'help_link' => $test['link'] ?? ''
                 ];
                 continue;
             }
@@ -225,13 +255,15 @@ foreach ($configArray as $testName => $test) {
 
         $fail[] = [
             'name' => $test['key'],
-            'result' => 'Header ' . $test['key'] . ' contains invalid value ' .$test['value']
+            'result' => 'Header ' . $test['key'] . ' contains invalid value ' .$test['value'],
+            'help_link' => $test['link'] ?? ''
         ];
     } else if ($test['type'] == 'multivalue') {
         if (!isset($headerContentArray[$test['key']])) {
             $fail[] = [
                 'name' => $test['key'],
-                'result' => 'Header is not set or is missing.'
+                'result' => 'Header is not set or is missing.',
+                'help_link' => $test['link'] ?? ''
             ];
             continue;
         }
@@ -244,7 +276,8 @@ foreach ($configArray as $testName => $test) {
                 if (in_array($val, $headerContentArray[$test['key']])) {
                     $fail[] = [
                         'name' => $test['key'],
-                        'result' => 'Header ' . $test['key'] . ' contains invalid value ' .$val
+                        'result' => 'Header ' . $test['key'] . ' contains invalid value ' .$val,
+                        'help_link' => $test['link'] ?? ''
                     ];
                     continue;
                 }
@@ -253,7 +286,8 @@ foreach ($configArray as $testName => $test) {
                 if (in_array($val, $headerContentArray[$test['key']])) {
                     $pass[] = [
                         'name' => $test['key'],
-                        'result' => 'Header ' . $test['key'] . ' contains correct value ' .$val
+                        'result' => 'Header ' . $test['key'] . ' contains correct value ' .$val,
+                        'help_link' => $test['link'] ?? ''
                     ];
                     $passCount++;
                 }
@@ -263,15 +297,25 @@ foreach ($configArray as $testName => $test) {
         if ($passCount < $count) {
             $fail[] = [
                 'name' => $test['key'],
-                'result' => 'Header ' . $test['key'] . ' is missing some values '
+                'result' => 'Header ' . $test['key'] . ' is missing some values ',
+                'help_link' => $test['link'] ?? ''
             ];
         }
     }
 }
+$fileName = date('His-d-m-Y') . '-results.log';
+$log = "SCRIPT:,scan.php,,";
+$logFile = file_put_contents($fileName, $log.PHP_EOL , FILE_APPEND | LOCK_EX);
+$log = "TARGET:,'.$target.',,";
+$logFile = file_put_contents($fileName, $log.PHP_EOL , FILE_APPEND | LOCK_EX);
+$log = "result,header-name,error,information-link";
+$logFile = file_put_contents($fileName, $log.PHP_EOL , FILE_APPEND | LOCK_EX);
 
 echo $green . ' ------------------------------------ PASS --------------------------------------- ' . $reset . PHP_EOL;
 foreach ($pass as $p) {
     echo  $green .  $p['name'] . ' ' . $p['result'] . $reset . PHP_EOL;
+    $log = 'PASS,' . $p['name'] . ',"' . $p['result'] . '","' . $p['help_link'] . '"';
+    $logFile = file_put_contents($fileName, $log.PHP_EOL , FILE_APPEND | LOCK_EX);
 }
 echo PHP_EOL;
 
@@ -279,6 +323,8 @@ if(!empty($fail)) {
     echo $red . ' ------------------------------------ FAIL --------------------------------------- ' . $reset . PHP_EOL;
     foreach ($fail as $f) {
         echo $red . $f['name'] . ' ' . $f['result'] . $reset . PHP_EOL;
+        $log = 'FAIL,' . $f['name'] . ',"' . $f['result'] . '","' . $f['help_link'] . '"';
+        $logFile = file_put_contents($fileName, $log.PHP_EOL , FILE_APPEND | LOCK_EX);
     }
 }
 
