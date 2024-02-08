@@ -20,7 +20,7 @@ Y88b  d88P Y8b.     888  888 Y88b.  888 888  888 Y8b.     888
                 ▒▒▒▒█▄▄█░░█▄▄█░░░░░░█▄▄█░░█▄▄█
                 
                  (c) 2021-2022 by Seth Wallace / Maxproton
-         <maxpr0t0n@protonmail.com> https://github.com/sethvoid/pwd
+         <maxpr0t0n@protonmail.com> https://github.com/sethvoid
            Licensed under Apache License 2.0 (see LICENSE file)
 
        Please do not use in military or for illegal purposes.
