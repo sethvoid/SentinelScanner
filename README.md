@@ -97,6 +97,6 @@ The matching type has three logic parameters
 #### Run scan
 To run the command do the following 
 ```bash
-scan.sh "https://endpoint-to-scan.com" "testplan.json"
+scan.sh "https://endpoint-to-scan.com" "profile-file.json"
 ```
 The config. being the tests to run.
