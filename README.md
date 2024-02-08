@@ -1,3 +1,25 @@
+```
+ .d8888b.                    888    d8b                   888
+d88P  Y88b                   888    Y8P                   888
+Y88b.                        888                          888
+ "Y888b.    .d88b.  88888b.  888888 888 88888b.   .d88b.  888
+    "Y88b. d8P  Y8b 888 "88b 888    888 888 "88b d8P  Y8b 888
+      "888 88888888 888  888 888    888 888  888 88888888 888
+Y88b  d88P Y8b.     888  888 Y88b.  888 888  888 Y8b.     888
+ "Y8888P"   "Y8888  888  888  "Y888 888 888  888  "Y8888  888
+
+                ▒▒▒▒▒▒▒█▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀█
+                ▒▒▒▒▒▒▒█░▒▒▒▒▒▒▒▓▒▒▓▒▒▒▒▒▒▒░█
+                ▒▒▒▒▒▒▒█░▒▒▓▒▒▒▒▒▒▒▒▒▄▄▒▓▒▒░█░▄▄
+                ▒▒▄▀▀▄▄█░▒▒▒▒▒▒▓▒▒▒▒█░░▀▄▄▄▄▄▀░░█
+                ▒▒█░░░░█░▒▒▒▒▒▒▒▒▒▒▒█░░░░░░░░░░░█  < We're in this together, or not at all.
+                ▒▒▒▀▀▄▄█░▒▒▒▒▓▒▒▒▓▒█░░░█▒░░░░█▒░░█
+                ▒▒▒▒▒▒▒█░▒▓▒▒▒▒▓▒▒▒█░░░░░░░▀░░░░░█
+                ▒▒▒▒▒▄▄█░▒▒▒▓▒▒▒▒▒▒▒█░░█▄▄█▄▄█░░█
+                ▒▒▒▒█░░░█▄▄▄▄▄▄▄▄▄▄█░█▄▄▄▄▄▄▄▄▄█
+                ▒▒▒▒█▄▄█░░█▄▄█░░░░░░█▄▄█░░█▄▄█
+```
+
 # SentinelScanner
 SentinelScanner is a lightweight yet powerful security tool designed to scan HTTP headers for potential vulnerabilities and misconfigurations. It meticulously inspects web server headers, identifying security-related issues such as missing security headers, improper configurations, and common vulnerabilities like Cross-Origin Resource Sharing (CORS) misconfigurations and Content Security Policy (CSP) violations. With its customizable scanning capabilities and detailed reporting, SentinelScanner empowers developers, security professionals, and system administrators to proactively identify and address security weaknesses in their web applications.
 
