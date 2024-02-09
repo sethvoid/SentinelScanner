@@ -71,7 +71,8 @@
     "value": [
       "enforce",
       "max-age=86400"
-    ]
+    ],
+    "link": ""
   },
   "test9": {
     "name": "cross-origin-embedder-policy",
