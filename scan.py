@@ -56,19 +56,13 @@ for key, value in response.headers.items():
     headerArray[0] = key.lower()
     headerArray[1] = value.strip().lower()
     multiValues = None
-    singleValueKeyPair = None
     if ',' in headerArray[1]:
         multiValues = [val.strip() for val in headerArray[1].split(',')]
-    if '=' in headerArray[1]:
-        a = headerArray[1].split('=', 1)
-        if len(a) == 2:
-            abrevValue = a[1].split(';', 1)
-            if len(abrevValue) > 0:
-                singleValueKeyPair = {a[0].strip(): abrevValue[0].strip()}
+    if ';' in headerArray[1]:
+        multiValues = [val.strip() for val in headerArray[1].split(',')]
+
     if multiValues:
         headerContentArray[headerArray[0]] = multiValues
-    elif singleValueKeyPair:
-        headerContentArray[headerArray[0]] = singleValueKeyPair
     else:
         headerContentArray[headerArray[0]] = headerArray[1]
 
@@ -90,35 +84,7 @@ for test_name, test in configArray.items():
         fail_result.append({'name': test['key'], 'result': 'Header is not set.', 'help_link': test['link']})
         continue
 
-    if test['type'] == 'single-key-value':
-        singleValueKey = ''
-        singleValueValue = ''
-        for key, val in test['value'].items():
-            singleValueKey = key.lower()
-            singleValueValue = val.lower()
-
-        if singleValueKey not in headerContentArray[test['key']]:
-            fail_result.append({'name': test['key'], 'result': f"Header {test['key']} does not contain the key value {singleValueKey}", 'help_link': test['link']})
-            continue
-
-        if test['matching-type'] == 'should-not-contain':
-            failFlag = False
-            failFlag = headerContentArray[test['key']][singleValueKey] == singleValueValue
-
-            if failFlag:
-                fail_result.append({'name': test['key'], 'result': f"Header {test['key']} contains invalid value {singleValueValue}", 'help_link': test['link']})
-                continue
-        else:
-            passFlag = False
-            passFlag = headerContentArray[test['key']][singleValueKey] == singleValueValue
-
-            if passFlag:
-                pass_result.append({'name': test['key'], 'result': f"Header {test['key']} contains correct value {singleValueValue}", 'help_link': test['link']})
-                continue
-
-        fail_result.append({'name': test['key'], 'result': f"Header {test['key']} contains invalid value {singleValueValue}", 'help_link': test['link']})
-
-    elif test['type'] == 'value':
+    if test['type'] == 'value':
         if test['matching-type'] == 'should-not-be-set':
             if test['key'] in headerContentArray:
                 fail_result.append({'name': test['key'], 'result': f"Prohibited header set {test['key']}", 'help_link': test['link']})

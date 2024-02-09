@@ -1,7 +1,6 @@
 <?php
 //types of value
 /**
- * single-key-value = for example strict-tansportType: key=value
  * value = strictsomething: value
  * multivalue = something: value1, value2, value3
  * matching-type: contain should-not-contain, should-not-be-set
@@ -63,27 +62,16 @@ foreach(preg_split("/((\r?\n)|(\r\n?))/", $response) as $line){
             $headerArray[1] = strtolower($headerArray[1]);
             $multiValues = null;
             $singleValueKeyPair = null;
-            if (str_contains($headerArray[1], ',')) {
+            if (str_contains($headerArray[1], ',') || str_contains($headerArray[1], ';')) {
                 $headerArray[1] = preg_replace('/\s+/', '', $headerArray[1]);
-                $multiValues = explode(',', $headerArray[1]);
-            }
-
-            if (str_contains($headerArray[1], '=')) {
-                $a = explode('=', $headerArray[1]);
-                if (isset($a[0]) && $a[1]) {
-                    $abrevValue = explode(';', $a[1]);
-                    if (isset($abrevValue[0])) {
-                        $singleValueKeyPair[preg_replace('/\s+/', '', $a[0])] = preg_replace('/\s+/', '',$abrevValue[0]);
-                    }
-                }
+                $splitChar = str_contains($headerArray[1], ',') ? ',' : ';';
+                $multiValues = explode($splitChar, $headerArray[1]);
             }
 
             if (!empty($multiValues)) {
                 foreach ($multiValues as $value) {
                     $headerContentArray[$headerArray[0]][] = $value;
                 }
-            } else if (!empty($singleValueKeyPair)) {
-                $headerContentArray[$headerArray[0]] = $singleValueKeyPair;
             } else {
                 $headerContentArray[$headerArray[0]] = preg_replace('/\s+/', '', $headerArray[1]);
             }
@@ -96,6 +84,8 @@ $pass  = [];
 $fail = [];
 foreach ($configArray as $testName => $test) {
     $test['key'] = strtolower($test['key']);
+
+    // Key shouldn't exist logic.
     if ($test['matching-type'] == 'should-not-be-set') {
         if (isset($headerContentArray[$test['key']])) {
             $fail[] = [
@@ -114,6 +104,7 @@ foreach ($configArray as $testName => $test) {
         }
     }
 
+    // Check key does exist logic
     if (!isset($headerContentArray[$test['key']])) {
         $fail[] = [
             'name' => $test['key'],
@@ -123,123 +114,9 @@ foreach ($configArray as $testName => $test) {
         continue;
     }
 
-    if ($test['type'] == 'single-key-value') {
-        $singleValueKey = '';
-        $singleValueValue = '';
-
-        foreach ($test['value'] as $key => $val) {
-            $singleValueKey = strtolower($key);
-            $singleValueValue = strtolower($val);
-        }
-
-        $isRange = false;
-        if (str_contains('-', $singleValueValue)) {
-            // This is a range!
-            $rangeArray = explode('-', $singleValueValue);
-            if (isset($rangeArray[0]) && isset($rangeArray[1])) {
-                $lowest = $rangeArray[0];
-                $highest = $rangeArray[1];
-
-                $isRange = is_numeric($lowest) && is_numeric($highest);
-            }
-        }
-
-        if (!isset($headerContentArray[$test['key']][$singleValueKey])) {
-            $fail[] = [
-                'name' => $test['key'],
-                'result' => 'Header ' . $test['key'] . ' does not contain the key value ' .$singleValueKey,
-                'help_link' => $test['link'] ?? ''
-            ];
-            continue;
-        }
-        if ($test['matching-type'] == 'should-not-contain') {
-            $failFlag = false;
-
-            if ($isRange) {
-                $failFlag = ($headerContentArray[$test['key']][$singleValueKey] <= $highest
-                    && $headerContentArray[$test['key']][$singleValueKey] >= $lowest
-                );
-            } else {
-                $failFlag = $headerContentArray[$test['key']][$singleValueKey] == $singleValueValue;
-            }
-
-            if ($failFlag) {
-                $fail[] = [
-                    'name' => $test['key'],
-                    'result' => 'Header ' . $test['key'] . ' contains invalid value ' . $singleValueValue,
-                    'help_link' => $test['link'] ?? ''
-                ];
-                continue;
-            }
-        } else {
-            $passFlag = false;
-            if ($isRange) {
-                $passFlag = ($headerContentArray[$test['key']][$singleValueKey] <= $highest
-                    && $headerContentArray[$test['key']][$singleValueKey] >= $lowest
-                );
-            } else {
-                $passFlag = $headerContentArray[$test['key']][$singleValueKey] == $singleValueValue;
-            }
-
-            if ($passFlag) {
-                $pass[] = [
-                    'name' => $test['key'],
-                    'result' => 'Header ' . $test['key'] . ' contains correct value ' . $singleValueValue,
-                    'help_link' => $test['link'] ?? ''
-                ];
-                continue;
-            }
-        }
-
-        $fail[] = [
-            'name' => $test['key'],
-            'result' => 'Header ' . $test['key'] . ' contains invalid value ' .$singleValueValue,
-            'help_link' => $test['link'] ?? ''
-        ];
-    } else if ($test['type'] == 'value') {
-        if ($test['matching-type'] == 'should-not-be-set') {
-            if (isset($headerContentArray[$test['key']])) {
-                $fail[] = [
-                    'name' => $test['key'],
-                    'result' => 'Prohibited header set ' . $test['key'],
-                    'help_link' => $test['link'] ?? ''
-                ];
-                continue;
-            }
-        }
-
-        if (!isset($headerContentArray[$test['key']])) {
-            $fail[] = [
-                'name' => $test['key'],
-                'result' => 'Header is not set or is missing.',
-                'help_link' => $test['link'] ?? ''
-            ];
-            continue;
-        }
-
-        $isRange = false;
-        if (str_contains('-', $test['value'])) {
-            // This is a range!
-            $rangeArray = explode('-', $test['value']);
-            if (isset($rangeArray[0]) && isset($rangeArray[1])) {
-                $lowest = $rangeArray[0];
-                $highest = $rangeArray[1];
-
-                $isRange = is_numeric($lowest) && is_numeric($highest);
-            }
-        }
-
-        if ($test['matching-type'] == 'should-not-contain') {
-            $failFlag = false;
-            if ($isRange) {
-                $failFlag = ($headerContentArray[$test['key']] <= $highest
-                    && $headerContentArray[$test['key']] >= $lowest
-                );
-            } else {
-                $failFlag = str_contains($headerContentArray[$test['key']], strtolower($test['value']));
-            }
-
-            if ($failFlag) {
+    if ($test['type'] == 'value') {
+       if ($test['matching-type'] == 'should-not-contain') {
+            if (str_contains($headerContentArray[$test['key']], strtolower($test['value']))) {
                 $fail[] = [
                     'name' => $test['key'],
                     'result' => 'Header ' . $test['key'] . ' contains invalid value ' .$test['value'],
@@ -248,16 +125,7 @@ foreach ($configArray as $testName => $test) {
                 continue;
             }
         } else {
-            $passFlag = false;
-
-            if ($isRange) {
-                $passFlag = ($headerContentArray[$test['key']] <= $highest
-                    && $headerContentArray[$test['key']] >= $lowest
-                );
-            } else {
-                $passFlag = $headerContentArray[$test['key']] == strtolower($test['value']);
-            }
-            if ($passFlag) {
+            if (str_contains($headerContentArray[$test['key']], strtolower($test['value']))) {
                 $pass[] = [
                     'name' => $test['key'],
                     'result' => 'Header ' . $test['key'] . ' contains correct value ' .$test['value'],
@@ -273,15 +141,6 @@ foreach ($configArray as $testName => $test) {
             'help_link' => $test['link'] ?? ''
         ];
     } else if ($test['type'] == 'multivalue') {
-        if (!isset($headerContentArray[$test['key']])) {
-            $fail[] = [
-                'name' => $test['key'],
-                'result' => 'Header is not set or is missing.',
-                'help_link' => $test['link'] ?? ''
-            ];
-            continue;
-        }
-
         $passCount = 0;
         $count = count($test['value']);
         foreach($test['value'] as $val) {
