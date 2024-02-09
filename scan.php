@@ -115,8 +115,12 @@ foreach ($configArray as $testName => $test) {
     }
 
     if ($test['type'] == 'value') {
+        $headerCont = $headerContentArray[$test['key']];
+        if (is_array($headerCont)) {
+            $headerCont = implode(' ', $headerCont);
+        }
        if ($test['matching-type'] == 'should-not-contain') {
-            if (str_contains($headerContentArray[$test['key']], strtolower($test['value']))) {
+            if (str_contains($headerCont, strtolower($test['value']))) {
                 $fail[] = [
                     'name' => $test['key'],
                     'result' => 'Header ' . $test['key'] . ' contains invalid value ' .$test['value'],
@@ -125,7 +129,7 @@ foreach ($configArray as $testName => $test) {
                 continue;
             }
         } else {
-            if (str_contains($headerContentArray[$test['key']], strtolower($test['value']))) {
+            if (str_contains($headerCont, strtolower($test['value']))) {
                 $pass[] = [
                     'name' => $test['key'],
                     'result' => 'Header ' . $test['key'] . ' contains correct value ' .$test['value'],
@@ -156,13 +160,24 @@ foreach ($configArray as $testName => $test) {
                 }
                 $passCount ++;
             } else {
-                if (in_array($val, $headerContentArray[$test['key']])) {
-                    $pass[] = [
-                        'name' => $test['key'],
-                        'result' => 'Header ' . $test['key'] . ' contains correct value ' .$val,
-                        'help_link' => $test['link'] ?? ''
-                    ];
-                    $passCount++;
+                if (is_array($headerContentArray[$test['key']])) {
+                    if (in_array($val, $headerContentArray[$test['key']])) {
+                        $pass[] = [
+                            'name' => $test['key'],
+                            'result' => 'Header ' . $test['key'] . ' contains correct value ' .$val,
+                            'help_link' => $test['link'] ?? ''
+                        ];
+                        $passCount++;
+                    }
+                } else {
+                    if (str_contains($val, $headerContentArray[$test['key']])) {
+                        $pass[] = [
+                            'name' => $test['key'],
+                            'result' => 'Header ' . $test['key'] . ' contains correct value ' .$val,
+                            'help_link' => $test['link'] ?? ''
+                        ];
+                        $passCount++;
+                    }
                 }
             }
         }

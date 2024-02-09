@@ -1,0 +1,47 @@
+{
+  "test1": {
+    "name": "Strict Transport Security",
+    "type": "multivalue",
+    "matching-type": "contain",
+    "key": "strict-transport-security",
+    "value": [
+      "max-age=31536000"
+    ],
+    "link": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security"
+  },
+  "test2": {
+    "name": "X-Content Type Options",
+    "type": "value",
+    "key": "X-Content-Type-Options",
+    "matching-type": "contain",
+    "value": "nosniff",
+    "link": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Content-Type-Options"
+  },
+  "test3": {
+    "name": "x-xss-protection",
+    "type": "value",
+    "key": "x-xss-protection",
+    "matching-type": "should-not-be-set",
+    "value": "",
+    "link": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-XSS-Protection"
+  },
+  "test4": {
+    "name": "referrer-policy",
+    "type": "value",
+    "key": "referrer-policy",
+    "matching-type": "contain",
+    "value": "no-referrer",
+    "link": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy"
+  },
+  "test5": {
+    "name": "Expect-CT",
+    "type": "multivalue",
+    "key": "Expect-CT",
+    "matching-type": "contain",
+    "value": [
+      "enforce",
+      "max-age=86400"
+    ],
+    "link": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Expect-CT"
+  }
+}

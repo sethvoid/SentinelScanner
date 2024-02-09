@@ -1,0 +1,29 @@
+{
+  "test1": {
+    "name": "Strict Transport Security",
+    "type": "multivalue",
+    "matching-type": "contain",
+    "key": "strict-transport-security",
+    "value": [
+      "max-age=31536000"
+    ],
+    "link": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security"
+  },
+  "test2": {
+    "name": "X-Content Type Options",
+    "type": "value",
+    "key": "X-Content-Type-Options",
+    "matching-type": "contain",
+    "value": "nosniff",
+    "link": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Content-Type-Options"
+  },
+  "test3": {
+    "name": "content security policy",
+    "type": "value",
+    "type": "value",
+    "key": "Content-Security-Policy",
+    "matching-type": "contain",
+    "value": "default-src 'self'",
+    "link": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Content-Type-Options"
+  }
+}

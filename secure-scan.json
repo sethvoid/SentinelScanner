@@ -11,10 +11,13 @@
   },
   "test2": {
     "name": "x Frame options",
-    "type": "value",
+    "type": "multivalue",
     "key": "x-frame-options",
     "matching-type": "contain",
-    "value": "DENY",
+    "value": [
+      "DENY",
+      "SAMEORIGIN"
+    ],
     "link": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options"
   },
   "test3": {
@@ -35,13 +38,9 @@
   },
   "test5": {
     "name": "x-xss-protection",
-    "type": "multivalue",
+    "type": "value",
     "key": "x-xss-protection",
-    "matching-type": "contain",
-    "value": [
-      "1",
-      "mode=block"
-    ],
+    "matching-type": "should-not-be-set",
     "link": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-XSS-Protection"
   },
   "test6": {
@@ -53,17 +52,6 @@
     "link": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy"
   },
   "test7": {
-    "name": "feature-policy",
-    "type": "multivalue",
-    "key": "feature-policy",
-    "matching-type": "contain",
-    "value": [
-      "accelerometer 'none'",
-      "camera 'none'"
-    ],
-    "link": "https://www.zaproxy.org/docs/alerts/10063-2/"
-  },
-  "test8": {
     "name": "Expect-CT",
     "type": "multivalue",
     "key": "Expect-CT",
@@ -72,9 +60,9 @@
       "enforce",
       "max-age=86400"
     ],
-    "link": ""
+    "link": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Expect-CT"
   },
-  "test9": {
+  "test8": {
     "name": "cross-origin-embedder-policy",
     "type": "value",
     "key": "cross-origin-embedder-policy",
@@ -82,7 +70,7 @@
     "value": "require-corp",
     "link": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cross-Origin-Embedder-Policy"
   },
-  "test10": {
+  "test9": {
     "name": "cross-origin-resource-policy",
     "type": "value",
     "key": "cross-origin-resource-policy",
