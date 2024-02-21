@@ -12,15 +12,18 @@ reset = "\033[0m"  # Reset to default color
 # Set timeout value in seconds
 timeout = 10
 
-if sys.argv[1] is None:
-    print(red + "missing argument target > span.py <target> <profile>" + reset)
-    sys.exit(1)
-if sys.argv[2] is None:
-     print(red + "missing argument profile > span.py <target> <profile>" + reset)
+try:
+    target = sys.argv[1]
+except IndexError:
+     print(red + "missing argument target > span.py <target> <profile>" + reset)
      sys.exit(1)
 
-target = sys.argv[1]
-configFile = sys.argv[2]
+try:
+    configFile = sys.argv[2]
+except IndexError:
+    print(red + "missing argument profile > span.py <target> <profile>" + reset)
+    sys.exit(1)
+
 # Text art
 text_art = """
  .d8888b.                    888    d8b                   888
