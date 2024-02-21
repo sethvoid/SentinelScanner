@@ -12,12 +12,12 @@ reset = "\033[0m"  # Reset to default color
 # Set timeout value in seconds
 timeout = 10
 
-try
+try:
     target = sys.argv[1]
 except NameError:
      print(red + "missing argument target > span.py <target> <profile>" + reset)
      sys.exit(1)
-try
+try:
     configFile = sys.argv[2]
 except NameError:
     print(red + "missing argument profile > span.py <target> <profile>" + reset)
