@@ -29,7 +29,7 @@ Y88b  d88P Y8b.     888  888 Y88b.  888 888  888 Y8b.     888
                 ▒▒▒▒▒▒▒█░▒▒▒▒▒▒▒▓▒▒▓▒▒▒▒▒▒▒░█
                 ▒▒▒▒▒▒▒█░▒▒▓▒▒▒▒▒▒▒▒▒▄▄▒▓▒▒░█░▄▄
                 ▒▒▄▀▀▄▄█░▒▒▒▒▒▒▓▒▒▒▒█░░▀▄▄▄▄▄▀░░█
-                ▒▒█░░░░█░▒▒▒▒▒▒▒▒▒▒▒█░░░░░░░░░░░█  <HOLD ON! HERE WE GO!
+                ▒▒█░░░░█░▒▒▒▒▒▒▒▒▒▒▒█░░░░░░░░░░░█
                 ▒▒▒▀▀▄▄█░▒▒▒▒▓▒▒▒▓▒█░░░█▒░░░░█▒░░█
                 ▒▒▒▒▒▒▒█░▒▓▒▒▒▒▓▒▒▒█░░░░░░░▀░░░░░█
                 ▒▒▒▒▒▄▄█░▒▒▒▓▒▒▒▒▒▒▒█░░█▄▄█▄▄█░░█
@@ -37,6 +37,12 @@ Y88b  d88P Y8b.     888  888 Y88b.  888 888  888 Y8b.     888
                 ▒▒▒▒█▄▄█░░█▄▄█░░░░░░█▄▄█░░█▄▄█
 """
 print(text_art)
+if target is None:
+    print(red + "missing argument target > span.py <target> <profile>" + reset)
+    sys.exit(1)
+if configFile is None:
+    print(red + "missing argument profile > span.py <target> <profile>" + reset)
+    sys.exit(1)
 try:
     response = requests.head(target, timeout=timeout)
 except requests.exceptions.Timeout:
